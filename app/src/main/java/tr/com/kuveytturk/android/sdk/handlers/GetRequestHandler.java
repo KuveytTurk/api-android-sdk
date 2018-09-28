@@ -17,10 +17,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import tr.com.kuveytturk.android.sdk.api.GetRequestFacade;
 import tr.com.kuveytturk.android.sdk.api.ResponseHandlingFacade;
+import tr.com.kuveytturk.android.sdk.api.util.QueryParameterBean;
 import tr.com.kuveytturk.android.sdk.receivers.GetResponseBroadcastReceiver;
 import tr.com.kuveytturk.android.sdk.util.Constants;
 import tr.com.kuveytturk.android.sdk.services.GetService;
@@ -40,15 +41,12 @@ public final class GetRequestHandler<T extends Activity & ResponseHandlingFacade
         mDeviceId = null;
     }
 
-    public GetRequestHandler(T callerActivity,
-                               int languageId) {
+    public GetRequestHandler(T callerActivity, int languageId) {
         this(callerActivity);
         mLanguageId = languageId;
     }
 
-    public GetRequestHandler(T callerActivity,
-                               int languageId,
-                               String deviceId) {
+    public GetRequestHandler(T callerActivity, int languageId, String deviceId) {
         this(callerActivity, languageId);
         mDeviceId = deviceId;
     }
@@ -56,31 +54,30 @@ public final class GetRequestHandler<T extends Activity & ResponseHandlingFacade
 
     @Override
     public void doGet(String endPoint,
-                      HashMap<String, Object> queryParams,
+                      ArrayList<QueryParameterBean> queryParams,
                       String authorizationBearer,
                       String signature) {
         Intent intent = new Intent(mCallerActivity, GetService.class);
         intent.putExtra("EndPoint", endPoint);
+        intent.putExtra("IsPublicAPI", false);
         intent.putExtra("Authorization", authorizationBearer);
         intent.putExtra("Signature", signature);
-        intent.putExtra("QueryParams", queryParams);
-        intent.putExtra("IsPublicAPI", false);
         intent.putExtra("LanguageId", mLanguageId);
 
         if(mDeviceId != null && !mDeviceId.isEmpty()) {
             intent.putExtra("DeviceId", mDeviceId);
         }
 
+        intent.putParcelableArrayListExtra("QueryParams", queryParams);
+
         mCallerActivity.startService(intent);
 
     }
 
     @Override
-    public void doGet(String endPoint,
-                      HashMap<String, Object> queryParams) {
+    public void doGet(String endPoint, ArrayList<QueryParameterBean> queryParams) {
         Intent intent = new Intent(mCallerActivity, GetService.class);
         intent.putExtra("EndPoint", endPoint);
-        intent.putExtra("QueryParams", queryParams);
         intent.putExtra("IsPublicAPI", true);
         intent.putExtra("LanguageId", mLanguageId);
 
@@ -88,6 +85,8 @@ public final class GetRequestHandler<T extends Activity & ResponseHandlingFacade
             intent.putExtra("DeviceId", mDeviceId);
         }
 
+        intent.putParcelableArrayListExtra("QueryParams", queryParams);
+
         mCallerActivity.startService(intent);
     }
 
@@ -97,9 +96,9 @@ public final class GetRequestHandler<T extends Activity & ResponseHandlingFacade
                       String signature) {
         Intent intent = new Intent(mCallerActivity, GetService.class);
         intent.putExtra("EndPoint", endPoint);
+        intent.putExtra("IsPublicAPI", false);
         intent.putExtra("Authorization", authorizationBearer);
         intent.putExtra("Signature", signature);
-        intent.putExtra("IsPublicAPI", false);
         intent.putExtra("LanguageId", mLanguageId);
 
         if(mDeviceId != null && !mDeviceId.isEmpty()) {

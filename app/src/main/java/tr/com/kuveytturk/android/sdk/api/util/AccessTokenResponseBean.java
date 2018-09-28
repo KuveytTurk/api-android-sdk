@@ -25,7 +25,7 @@ import java.io.Serializable;
  * @version     1.0
  * @since       2018-04-18
  */
-public class AccessTokenResponseBean implements Serializable{
+public final class AccessTokenResponseBean implements Serializable{
 
     @SerializedName("access_token")
     @Expose

@@ -12,10 +12,10 @@
 
 package tr.com.kuveytturk.android.sdk.services;
 
-import com.google.gson.JsonObject;
 
 import java.util.Map;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 
 import retrofit2.http.GET;
@@ -27,22 +27,22 @@ import retrofit2.http.QueryMap;
 public interface GetServiceInterface {
 
     @GET("{endPoint}")
-    Call<JsonObject> get(@Path("endPoint") String endPoint,
-                         @Header("Content-Type") String contentType,
-                         @Header("Authorization") String authorizationBearer,
-                         @Header("Signature") String signature,
-                         @Header("LanguageId") int languageId,
-                         @QueryMap Map<String, Object> queryParams);
+    Call<ResponseBody> get(@Path("endPoint") String endPoint,
+                           @Header("Content-Type") String contentType,
+                           @Header("Authorization") String authorizationBearer,
+                           @Header("Signature") String signature,
+                           @Header("LanguageId") int languageId,
+                           @QueryMap Map<String, Object> queryParams);
 
     @GET("{endPoint}")
-    Call<JsonObject> get(@Path("endPoint") String endPoint,
-                         @Header("Content-Type") String contentType,
-                         @Header("Authorization") String authorizationBearer,
-                         @Header("Signature") String signature,
-                         @Header("LanguageId") int languageId);
+    Call<ResponseBody> get(@Path("endPoint") String endPoint,
+                          @Header("Content-Type") String contentType,
+                          @Header("Authorization") String authorizationBearer,
+                          @Header("Signature") String signature,
+                          @Header("LanguageId") int languageId);
 
     @GET("{endPoint}")
-    Call<JsonObject> getWithDeviceId(@Path("endPoint") String endPoint,
+    Call<ResponseBody> getWithDeviceId(@Path("endPoint") String endPoint,
                                      @Header("Content-Type") String contentType,
                                      @Header("Authorization") String authorizationBearer,
                                      @Header("Signature") String signature,
@@ -51,7 +51,7 @@ public interface GetServiceInterface {
 
 
     @GET("{endPoint}")
-    Call<JsonObject> getWithDeviceId(@Path("endPoint") String endPoint,
+    Call<ResponseBody> getWithDeviceId(@Path("endPoint") String endPoint,
                                      @Header("Content-Type") String contentType,
                                      @Header("Authorization") String authorizationBearer,
                                      @Header("Signature") String signature,
@@ -61,45 +61,45 @@ public interface GetServiceInterface {
 
 
     @GET("{endPoint}")
-    Call<JsonObject> getFromPublicAPI(@Path("endPoint") String endPoint,
+    Call<ResponseBody> getFromPublicAPI(@Path("endPoint") String endPoint,
                                       @Header("Content-Type") String contentType,
                                       @Header("LanguageId") int languageId);
 
     @GET("{endPoint}")
-    Call<JsonObject> getFromPublicAPI(@Path("endPoint") String endPoint,
+    Call<ResponseBody> getFromPublicAPI(@Path("endPoint") String endPoint,
                                       @Header("Content-Type") String contentType,
                                       @Header("Signature") String signature,
                                       @Header("LanguageId") int languageId);
 
     @GET("{endPoint}")
-    Call<JsonObject> getFromPublicAPI(@Path("endPoint") String endPoint,
+    Call<ResponseBody> getFromPublicAPI(@Path("endPoint") String endPoint,
                                       @Header("Content-Type") String contentType,
                                       @Header("Signature") String signature,
                                       @Header("LanguageId") int languageId,
                                       @QueryMap Map<String, Object> queryParams);
 
     @GET("{endPoint}")
-    Call<JsonObject> getFromPublicAPIWithDeviceId(@Path("endPoint") String endPoint,
+    Call<ResponseBody> getFromPublicAPIWithDeviceId(@Path("endPoint") String endPoint,
                                                   @Header("Content-Type") String contentType,
                                                   @Header("LanguageId") int languageId,
                                                   @Header("DeviceId") String deviceId);
 
     @GET("{endPoint}")
-    Call<JsonObject> getFromPublicAPIWithDeviceId(@Path("endPoint") String endPoint,
+    Call<ResponseBody> getFromPublicAPIWithDeviceId(@Path("endPoint") String endPoint,
                                                   @Header("Content-Type") String contentType,
                                                   @Header("Signature") String signature,
                                                   @Header("LanguageId") int languageId,
                                                   @Header("DeviceId") String deviceId);
 
     @GET("{endPoint}")
-    Call<JsonObject> getFromPublicAPIWithDeviceId(@Path("endPoint") String endPoint,
+    Call<ResponseBody> getFromPublicAPIWithDeviceId(@Path("endPoint") String endPoint,
                                                   @Header("Content-Type") String contentType,
                                                   @Header("LanguageId") int languageId,
                                                   @Header("DeviceId") String deviceId,
                                                   @QueryMap Map<String, Object> queryParams);
 
     @GET("{endPoint}")
-    Call<JsonObject> getFromPublicAPIWithDeviceId(@Path("endPoint") String endPoint,
+    Call<ResponseBody> getFromPublicAPIWithDeviceId(@Path("endPoint") String endPoint,
                                                   @Header("Content-Type") String contentType,
                                                   @Header("Signature") String signature,
                                                   @Header("LanguageId") int languageId,

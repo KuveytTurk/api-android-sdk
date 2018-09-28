@@ -21,9 +21,7 @@ public class Constants {
     public static String BASE_ACCESS_TOKEN_URL = "https://idprep.kuveytturk.com.tr/";
     public static String ACCESS_TOKEN_ENDPOINT = "api/connect/token";
 
-    public static String BASE_API_ACCESS_URL = "http://172.29.16.87:92/";//"https://apitest.kuveytturk.com.tr/prep/";
-
-    public static String KEY_STORE_ALIAS = "KTKeyStoreAlias";
+    public static String BASE_API_ACCESS_URL = "https://apitest.kuveytturk.com.tr/prep/"; //"http://172.31.236.73:92/";
 
     public static final String KT_GET_SERVICE_TAG = "KTGetService";
     public static final String KT_GET_SERVICE_MESSAGE = "KTWebAPIGetServiceMessage";

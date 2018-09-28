@@ -15,6 +15,8 @@ package tr.com.kuveytturk.android.sdk.api.util;
 import android.util.Base64;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.KeyFactory;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -25,7 +27,9 @@ import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Provides utility methods for signature generation for the GET and POST requests.
@@ -34,7 +38,7 @@ import java.util.HashMap;
  * @version     1.0
  * @since       2018-04-18
  */
-public class SignatureGenerator {
+public final class SignatureGenerator {
 
     /**
      * Utility method for generating signature for GET requests
@@ -47,18 +51,15 @@ public class SignatureGenerator {
      */
     public static String generateSignatureForGetRequest(String accessToken,
                                                         String privateKeyAsString,
-                                                        HashMap<String, Object> queryParams) throws SignatureGenerationException {
+                                                        ArrayList<QueryParameterBean> queryParams) throws SignatureGenerationException {
 
         String queryString = getQueryParamsString(queryParams);
         String input = accessToken.trim() + queryString;
         String base64Signature = null;
 
         try {
-
-            System.out.println("INPUT to SIGN: " + input);
             PrivateKey privateKey = buildPrivateKeyFromString(privateKeyAsString);
             base64Signature = signSHA256RSA(input, privateKey);
-            System.out.println("SIGNATURE: " + base64Signature);
         } catch (Exception e) {
             String msg = e.getLocalizedMessage();
             SignatureGenerationException signatureEx = new SignatureGenerationException(msg, e);
@@ -116,19 +117,39 @@ public class SignatureGenerator {
      * @param queryParams The query parameter names and values as an HashMap object
      * @return Query parameters as string (e.g. ?param1=1&param2=2)
      */
-    private static String getQueryParamsString(HashMap<String, Object> queryParams) throws SignatureGenerationException {
+    private static String getQueryParamsString(ArrayList<QueryParameterBean> queryParams) throws SignatureGenerationException {
         if (queryParams != null && !queryParams.isEmpty()) {
             StringBuilder sb = new StringBuilder();
-            sb.append("?");
-            int count = 0;
-            for (HashMap.Entry<String, Object> e : queryParams.entrySet()) {
-                count++;
-                sb.append(e.getKey()).
-                        append("=").
-                        append(e.getValue().toString());
 
-                if (count != queryParams.keySet().size()) {
-                    sb.append("&");
+            try{
+                sb.append(URLEncoder.encode("?", "UTF-8"));;
+            } catch (UnsupportedEncodingException exp) {
+                String msg = "Error occurred while converting ? mark into URLEncoded form.\n";
+                SignatureGenerationException signatureEx = new SignatureGenerationException(msg, exp);
+                throw signatureEx;
+            }
+
+            int count = 0;
+            for (QueryParameterBean e : queryParams) {
+                count++;
+                try{
+                  sb.append(URLEncoder.encode(e.getParamName(), "UTF-8")).
+                          append(URLEncoder.encode("=", "UTF-8")).
+                          append(URLEncoder.encode(e.getParamValue().toString(), "UTF-8"));
+                } catch (UnsupportedEncodingException exp) {
+                    String msg = "Error occurred while converting query parameters into string form.\n";
+                    SignatureGenerationException signatureEx = new SignatureGenerationException(msg, exp);
+                    throw signatureEx;
+                }
+
+                if (count != queryParams.size()) {
+                    try{
+                        sb.append(URLEncoder.encode("&", "UTF-8"));;
+                    } catch (UnsupportedEncodingException exp) {
+                        String msg = "Error occurred while converting & mark into URLEncoded form.\n";
+                        SignatureGenerationException signatureEx = new SignatureGenerationException(msg, exp);
+                        throw signatureEx;
+                    }
                 }
             }
 
@@ -149,7 +170,7 @@ public class SignatureGenerator {
                 replaceAll("-----BEGIN PUBLIC KEY-----\n", "").
                 replaceAll("-----END PUBLIC KEY-----\n", "").
                 replaceAll("\n", "");;
-        byte[] publicKeyBytes = Base64.decode(publicKeyAsString,  Base64.DEFAULT);
+        byte[] publicKeyBytes = Base64.decode(publicKeyStrWithoutHeaderFooter.getBytes("UTF-8"),  Base64.NO_WRAP);
         X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         return keyFactory.generatePublic(spec);
@@ -167,7 +188,7 @@ public class SignatureGenerator {
                 replaceAll("-----END PRIVATE KEY-----", "").
                 replaceAll("\n", "");
         byte[] privateKeyBytes =
-                Base64.decode(privateKeyStrWithoutHeaderFooter.getBytes("UTF-8"),  Base64.NO_WRAP);
+                Base64.decode(privateKeyStrWithoutHeaderFooter.getBytes("UTF-8"), Base64.NO_WRAP);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
         KeyFactory fact = KeyFactory.getInstance("RSA");
         return fact.generatePrivate(keySpec);

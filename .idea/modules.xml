@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/V5.iml" filepath="$PROJECT_DIR$/V5.iml" />
+      <module fileurl="file://D:\Work\KTAndroidSDK\KTGitHub\BIREYSEL_CHECKOUT\api-android-sdk\V5.iml" filepath="D:\Work\KTAndroidSDK\KTGitHub\BIREYSEL_CHECKOUT\api-android-sdk\V5.iml" />
+      <module fileurl="file://$PROJECT_DIR$/api-android-sdk.iml" filepath="$PROJECT_DIR$/api-android-sdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

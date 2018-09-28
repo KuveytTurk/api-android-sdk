@@ -13,6 +13,7 @@
 package tr.com.kuveytturk.android.sdk;
 
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -25,7 +26,7 @@ import com.google.gson.JsonObject;
 
 import java.security.KeyPair;
 import java.security.KeyStoreException;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import tr.com.kuveytturk.android.sdk.api.AccessTokenFacade;
 import tr.com.kuveytturk.android.sdk.api.AuthorizationFacade;
@@ -35,12 +36,14 @@ import tr.com.kuveytturk.android.sdk.api.FacadeFactoryInterface;
 import tr.com.kuveytturk.android.sdk.api.PostRequestFacade;
 import tr.com.kuveytturk.android.sdk.api.ResponseHandlingFacade;
 import tr.com.kuveytturk.android.sdk.api.util.AccessTokenResponseBean;
+import tr.com.kuveytturk.android.sdk.api.util.QueryParameterBean;
 import tr.com.kuveytturk.android.sdk.api.util.SignatureGenerationException;
 import tr.com.kuveytturk.android.sdk.api.util.SignatureGenerator;
 
 public class MainActivity extends AppCompatActivity implements ResponseHandlingFacade {
     private final static String CLIENT_ID = "ea84d416918e4733bc87663a63142175";
-    private final static String CLIENT_SECRET = "q7YEj9LIYeAdu7nZ28SSFJH7L3dLuTLGnk8tH6/LbSKIiPYvtihifQ==";
+    private final static String CLIENT_SECRET =
+            "q7YEj9LIYeAdu7nZ28SSFJH7L3dLuTLGnk8tH6/LbSKIiPYvtihifQ==";
     private final static String REDIRECT_URI = "ktauth://callback";
     private final String SCOPE = "loans transfers public accounts offline_access";
     private final static String RESPONSE_TYPE = "code";
@@ -63,7 +66,8 @@ public class MainActivity extends AppCompatActivity implements ResponseHandlingF
             "Q+gWwkAzxqSZ3dQRWwIDAQAB" +
             "-----END PUBLIC KEY-----";
 
-    private final static String PRIVATE_KEY = "MIICWwIBAAKBgQCKdiTMfK6+6opAt7Lh3230kGA2Rz+ErdKpjB41LI0lVh/HBuvV" +
+    private final static String PRIVATE_KEY =
+            "MIICWwIBAAKBgQCKdiTMfK6+6opAt7Lh3230kGA2Rz+ErdKpjB41LI0lVh/HBuvV" +
             "v46/Mou8sodPApuO0OXFrxRjqRLjr3yECOuY65vkknHEjK5XjOF1GrlOzSMHaEgg" +
             "cdWBZTJo4wOyHA5kI8a+RVxNcRPCuQAxq5FXEzA6Q+gWwkAzxqSZ3dQRWwIDAQAB" +
             "AoGAaNvQQoyqSiuVSC3WaviqbOxp8LFEiVaak4xp1BtJSV1P84pqUBYiJOpCqUUK" +
@@ -89,11 +93,18 @@ public class MainActivity extends AppCompatActivity implements ResponseHandlingF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy =
+                    new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //BEGIN - KUVEYT TÜRK API HANDLEs
-        FacadeFactoryInterface<MainActivity> ktFacadeFactory = new FacadeFactory<MainActivity>(this);
+        FacadeFactoryInterface<MainActivity> ktFacadeFactory =
+                new FacadeFactory<MainActivity>(this);
         mKTAuthHandlerFacade = ktFacadeFactory.getAuthorizationFacade();
         mKTAccessTokenHandlerFacade = ktFacadeFactory.getAccessTokenFacade();
         mKTGetRequestHandlerFacade =  ktFacadeFactory.getGetFacade();
@@ -159,23 +170,32 @@ public class MainActivity extends AppCompatActivity implements ResponseHandlingF
             mRefreshToken = responseBean.getRefreshToken();
             mAuthorizationBearer = "Bearer " + mAccessToken;
 
-            //Sample GET Request BEGIN
-            HashMap<String, Object> queryParams = new HashMap<String, Object>();
-            queryParams.put("cityId", "34");
+            //****** BEGIN Sample GET Request ******
+            ArrayList<QueryParameterBean> queryParams = new ArrayList<QueryParameterBean>();
+            QueryParameterBean param = new QueryParameterBean("cityId", "34");
+            queryParams.add(param);
 
             String signatureForGETRequest = null;
             try {
-                signatureForGETRequest = SignatureGenerator.generateSignatureForGetRequest(mAccessToken, PRIVATE_KEY, queryParams);
+                signatureForGETRequest =
+                        SignatureGenerator
+                                .generateSignatureForGetRequest(mAccessToken,
+                                                                PRIVATE_KEY,
+                                                                queryParams);
             } catch (SignatureGenerationException e) {
                 e.printStackTrace();
                 return;
             }
 
-            mKTGetRequestHandlerFacade.doGet("v1/data/banks/10/branches", queryParams, mAuthorizationBearer, signatureForGETRequest);
+            mKTGetRequestHandlerFacade.doGet(
+                    "v1/data/banks/10/branches",
+                    queryParams,
+                    mAuthorizationBearer,
+                    signatureForGETRequest);
             //mKTGetRequestHandlerFacade.doGet("v1/data/testcustomers",mAuthorizationBearer, mAccessToken);
-            //Sample GET Request END
+            //****** END Sample GET Request ******
 
-            //Sample POST Request BEGIN
+            //****** BEGIN Sample POST Request ******
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("SenderAccountSuffix", 1);
             jsonObject.addProperty("ReceiverName", "Dohn");
@@ -187,15 +207,21 @@ public class MainActivity extends AppCompatActivity implements ResponseHandlingF
 
             String signatureForPostRequest = null;
             try {
-                signatureForPostRequest = SignatureGenerator.generateSignatureForPostRequest(mAccessToken, PRIVATE_KEY, jsonBody);
+                signatureForPostRequest =
+                        SignatureGenerator
+                          .generateSignatureForPostRequest(mAccessToken, PRIVATE_KEY, jsonBody);
             } catch (SignatureGenerationException e) {
                 e.printStackTrace();
                 return;
             }
 
             //Make post request
-            mKTPostRequestHandlerFacade.doPost("v1/transfers/ToIBAN",jsonBody, mAuthorizationBearer, signatureForPostRequest);
-            //Sample POST Request END
+            mKTPostRequestHandlerFacade.doPost(
+                    "v1/transfers/ToIBAN",
+                    jsonBody,
+                    mAuthorizationBearer,
+                    signatureForPostRequest);
+            //****** END Sample POST Request ******
 
         } else {
             System.out.println("ERROR OCCURRED WHILE RETRIEVING THE ACCESS CODE:\n ERROR: " +
@@ -208,9 +234,14 @@ public class MainActivity extends AppCompatActivity implements ResponseHandlingF
     public void onAuthorizationCodeReceived(String authorizationCode, String state, String errorCode) {
         if (errorCode == null || errorCode.isEmpty()) {
             mKTAuthorizationCode = authorizationCode;
-            mKTAccessTokenHandlerFacade.requestAccessTokenWithCode(CLIENT_ID, CLIENT_SECRET, mKTAuthorizationCode, REDIRECT_URI);
+            mKTAccessTokenHandlerFacade.requestAccessTokenWithCode(
+                    CLIENT_ID,
+                    CLIENT_SECRET,
+                    mKTAuthorizationCode,
+                    REDIRECT_URI);
         } else {
-            System.out.println("AUTHORIZATION FAILED!\n ERROR CODE: " + errorCode + "\nSTATE: " + state);
+            System.out.println("AUTHORIZATION FAILED!\n ERROR CODE: "
+                    + errorCode + "\nSTATE: " + state);
         }
     }
 }
