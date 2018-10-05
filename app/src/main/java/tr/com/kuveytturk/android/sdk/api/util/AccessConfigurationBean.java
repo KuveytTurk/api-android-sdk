@@ -13,7 +13,7 @@
 package tr.com.kuveytturk.android.sdk.api.util;
 
 /**
- * Container class to hold configuration data to access the Kuveyt Türk web service bakend
+ * Container class to hold configuration data to access the Kuveyt Türk web service backend
  *
  * @author      Fikri Aydemir
  * @version     1.0
@@ -25,7 +25,7 @@ public final class AccessConfigurationBean implements java.io.Serializable {
     public static final String DEFAULT_AUTHORIZATION_ENDPOINT = "api/connect/authorize";
     public static final String DEFAULT_BASE_ACCESS_TOKEN_URL = "https://idprep.kuveytturk.com.tr/";
     public static final String DEFAULT_ACCESS_TOKEN_ENDPOINT = "api/connect/token";
-    public static final String DEFAULT_BASE_API_ACCESS_URL = "https://apitest.kuveytturk.com.tr/prep/";//"http://172.31.236.73:92/";
+    public static final String DEFAULT_BASE_API_ACCESS_URL = "https://apitest.kuveytturk.com.tr/prep/"; //"http://172.31.236.73:92/";
 
     /**
      * Holds the base backend URL to where the authorization requests are sent
