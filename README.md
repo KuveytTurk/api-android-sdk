@@ -9,7 +9,7 @@ In the rest of this document, the name “SDK user” is used to refer to the ap
 
 # 1.1	Highlights
 
-•	Kuveyt Türk banking SDK provides a high level API for sending/receiving requests to Kuveyt Türk API server by using the combination Factory and Façade design patterns in order to minimize the effort for the SDK user to code.
+•	Kuveyt Türk banking SDK provides a high level API for sending/receiving requests to Kuveyt Türk API server by using a combination Factory and Façade design patterns in order to minimize the effort for the SDK user to code.
 
 •	The SDK provides a non-blocking client API for sending requests to the API server. This means the methods provided in the API returns immediately per method call. This is achieved transparently to the SDK user by delegating the execution immediately to a background thread per method call. Background thread is managed by the android platform and the SDK user has nothing to do to manage it.
 
@@ -28,7 +28,7 @@ The SDK implementation makes use of retrofit and gson libraries. Therefore, the 
 
 # 2.	ARCHITECTURE
 
-The SDK provides a high level API for sending/receiving requests to Kuveyt Türk API server by using the combination Factory and Façade design patterns in order to minimize the effort for the SDK user to code. The classes are the SDK user needs are located under the following two packages:
+The SDK provides a high level API for sending/receiving requests to Kuveyt Türk API server by using the combination Factory and Façade design patterns in order to minimize the effort for the SDK user to code. The classes that the SDK user needs are located under the following two packages:
 
 tr.com.kuveytturk.android.sdk.api
 
