@@ -1,7 +1,7 @@
 /*
  *  KUVEYT TÜRK PARTICIPATION BANK INC.
  *
- *   Developed under MIT Licence
+ *   Developed under MIT License
  *   Copyright (c) 2018
  *
  *   Author : Fikri Aydemir
@@ -75,10 +75,13 @@ public final class GetRequestHandler<T extends Activity & ResponseHandlingFacade
     }
 
     @Override
-    public void doGet(String endPoint, ArrayList<QueryParameterBean> queryParams) {
+    public void doGet(String endPoint,
+                      ArrayList<QueryParameterBean> queryParams,
+                      String authorizationBearer) {
         Intent intent = new Intent(mCallerActivity, GetService.class);
         intent.putExtra("EndPoint", endPoint);
         intent.putExtra("IsPublicAPI", true);
+        intent.putExtra("Authorization", authorizationBearer);
         intent.putExtra("LanguageId", mLanguageId);
 
         if(mDeviceId != null && !mDeviceId.isEmpty()) {
@@ -110,11 +113,15 @@ public final class GetRequestHandler<T extends Activity & ResponseHandlingFacade
     }
 
     @Override
-    public void doGet(String endPoint) {
+    public void doGetToPublicAPIEndPoint(String endPoint,
+                      String authorizationBearer,
+                      String signature) {
         Intent intent = new Intent(mCallerActivity, GetService.class);
         intent.putExtra("EndPoint", endPoint);
         intent.putExtra("IsPublicAPI", true);
+        intent.putExtra("Authorization", authorizationBearer);
         intent.putExtra("LanguageId", mLanguageId);
+        intent.putExtra("Signature", signature);
 
         if(mDeviceId != null && !mDeviceId.isEmpty()) {
             intent.putExtra("DeviceId", mDeviceId);

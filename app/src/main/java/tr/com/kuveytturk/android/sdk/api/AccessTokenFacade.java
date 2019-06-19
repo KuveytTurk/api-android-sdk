@@ -1,7 +1,7 @@
 /*
  *  KUVEYT TÜRK PARTICIPATION BANK INC.
  *
- *   Developed under MIT Licence
+ *   Developed under MIT License
  *   Copyright (c) 2018
  *
  */
@@ -34,10 +34,23 @@ public interface AccessTokenFacade<T extends Activity & ResponseHandlingFacade> 
      * @param redirectUri Holds redirect URI that is provided by Kuveyt Türk API market when
      *                    an application is created.
      */
-    void requestAccessTokenWithCode(String clientId,
-                                    String clientSecret,
-                                    String code,
-                                    String redirectUri);
+    void requestAccessTokenWithAuthorizationCode(String clientId,
+                                                 String clientSecret,
+                                                 String code,
+                                                 String redirectUri);
+
+    /**
+     * Sends an access token request to the identity server of Kuveyt Türk.
+     *
+     * @param clientId The clientId that is provided by Kuveyt Türk API market when an application
+     *                 is created.
+     * @param clientSecret The clientSecret that is provided by Kuveyt Türk API market when an
+     *                     application is created.
+     * @param scope scope list seperated by space (e.g. public offline)
+     */
+    void requestAccessTokenWithClientCredentials(String clientId,
+                                                 String clientSecret,
+                                                 String scope);
 
     /**
      * Sends a refresh token to the identity server to get a new access token.

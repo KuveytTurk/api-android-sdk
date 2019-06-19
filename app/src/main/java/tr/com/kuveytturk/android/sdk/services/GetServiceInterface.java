@@ -1,7 +1,7 @@
 /*
  *  KUVEYT TÜRK PARTICIPATION BANK INC.
  *
- *   Developed under MIT Licence
+ *   Developed under MIT License
  *   Copyright (c) 2018
  *
  *   Author : Fikri Aydemir
@@ -59,51 +59,45 @@ public interface GetServiceInterface {
                                      @Header("DeviceId") String deviceId,
                                      @QueryMap Map<String, Object> queryParams);
 
+    //PUBLIC API Definitions
 
     @GET("{endPoint}")
     Call<ResponseBody> getFromPublicAPI(@Path("endPoint") String endPoint,
-                                      @Header("Content-Type") String contentType,
-                                      @Header("LanguageId") int languageId);
+                                        @Header("Content-Type") String contentType,
+                                        @Header("LanguageId") int languageId,
+                                        @Header("Authorization") String authorizationBearer);
 
     @GET("{endPoint}")
     Call<ResponseBody> getFromPublicAPI(@Path("endPoint") String endPoint,
-                                      @Header("Content-Type") String contentType,
-                                      @Header("Signature") String signature,
-                                      @Header("LanguageId") int languageId);
+                                        @Header("Content-Type") String contentType,
+                                        @Header("Signature") String signature,
+                                        @Header("LanguageId") int languageId,
+                                        @Header("Authorization") String authorizationBearer);
 
     @GET("{endPoint}")
     Call<ResponseBody> getFromPublicAPI(@Path("endPoint") String endPoint,
-                                      @Header("Content-Type") String contentType,
-                                      @Header("Signature") String signature,
-                                      @Header("LanguageId") int languageId,
-                                      @QueryMap Map<String, Object> queryParams);
+                                        @Header("Content-Type") String contentType,
+                                        @Header("Signature") String signature,
+                                        @Header("LanguageId") int languageId,
+                                        @Header("Authorization") String authorizationBearer,
+                                        @QueryMap Map<String, Object> queryParams
+                                        );
 
     @GET("{endPoint}")
     Call<ResponseBody> getFromPublicAPIWithDeviceId(@Path("endPoint") String endPoint,
-                                                  @Header("Content-Type") String contentType,
-                                                  @Header("LanguageId") int languageId,
-                                                  @Header("DeviceId") String deviceId);
+                                                    @Header("Content-Type") String contentType,
+                                                    @Header("Signature") String signature,
+                                                    @Header("LanguageId") int languageId,
+                                                    @Header("DeviceId") String deviceId,
+                                                    @Header("Authorization") String authorizationBearer);
 
     @GET("{endPoint}")
     Call<ResponseBody> getFromPublicAPIWithDeviceId(@Path("endPoint") String endPoint,
-                                                  @Header("Content-Type") String contentType,
-                                                  @Header("Signature") String signature,
-                                                  @Header("LanguageId") int languageId,
-                                                  @Header("DeviceId") String deviceId);
-
-    @GET("{endPoint}")
-    Call<ResponseBody> getFromPublicAPIWithDeviceId(@Path("endPoint") String endPoint,
-                                                  @Header("Content-Type") String contentType,
-                                                  @Header("LanguageId") int languageId,
-                                                  @Header("DeviceId") String deviceId,
-                                                  @QueryMap Map<String, Object> queryParams);
-
-    @GET("{endPoint}")
-    Call<ResponseBody> getFromPublicAPIWithDeviceId(@Path("endPoint") String endPoint,
-                                                  @Header("Content-Type") String contentType,
-                                                  @Header("Signature") String signature,
-                                                  @Header("LanguageId") int languageId,
-                                                  @Header("DeviceId") String deviceId,
-                                                  @QueryMap Map<String, Object> queryParams);
+                                                    @Header("Content-Type") String contentType,
+                                                    @Header("Signature") String signature,
+                                                    @Header("LanguageId") int languageId,
+                                                    @Header("DeviceId") String deviceId,
+                                                    @Header("Authorization") String authorizationBearer,
+                                                    @QueryMap Map<String, Object> queryParams);
 
 }

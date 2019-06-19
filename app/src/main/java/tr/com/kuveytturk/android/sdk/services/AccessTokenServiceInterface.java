@@ -1,7 +1,7 @@
 /*
  *  KUVEYT TÜRK PARTICIPATION BANK INC.
  *
- *   Developed under MIT Licence
+ *   Developed under MIT License
  *   Copyright (c) 2018
  *
  *   Author : Fikri Aydemir
@@ -23,13 +23,23 @@ public interface AccessTokenServiceInterface {
 
     @POST("{endPoint}")
     @FormUrlEncoded
-    Call<AccessTokenResponseBean> requestAccessTokenWithCode(
+    Call<AccessTokenResponseBean> requestAccessTokenWithAuthorizationCode(
             @Path("endPoint") String endPoint,
             @Field("client_id") String clientString,
             @Field("client_secret") String clientSecret,
             @Field("grant_type") String grantType,
             @Field("code") String code,
             @Field("redirect_uri") String redirectUri
+    );
+
+    @POST("{endPoint}")
+    @FormUrlEncoded
+    Call<AccessTokenResponseBean> requestAccessTokenWithClientCredentials(
+            @Path("endPoint") String endPoint,
+            @Field("client_id") String clientString,
+            @Field("client_secret") String clientSecret,
+            @Field("grant_type") String grantType,
+            @Field("scope") String scope
     );
 
     @POST("{endPoint}")

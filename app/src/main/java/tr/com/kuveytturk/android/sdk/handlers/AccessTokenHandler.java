@@ -1,7 +1,7 @@
 /*
  *  KUVEYT TÜRK PARTICIPATION BANK INC.
  *
- *   Developed under MIT Licence
+ *   Developed under MIT License
  *   Copyright (c) 2018
  *
  *   Author : Fikri Aydemir
@@ -36,15 +36,32 @@ public class AccessTokenHandler<T extends Activity & ResponseHandlingFacade>  im
 
 
     @Override
-    public void requestAccessTokenWithCode(String clientId,
-                                           String clientSecret,
-                                           String code,
-                                           String redirectUri){
+    public void requestAccessTokenWithAuthorizationCode(String clientId,
+                                                        String clientSecret,
+                                                        String code,
+                                                        String redirectUri){
         Intent intent = new Intent(mCallerActivity, AccessTokenRetrievalService.class);
         intent.putExtra("ClientId", clientId);
         intent.putExtra("ClientSecret", clientSecret);
         intent.putExtra("Code", code);
         intent.putExtra("RedirectUri", redirectUri);
+        intent.putExtra("GrantType", Constants.AUTHORIZATION_CODE);
+        intent.putExtra("IsForRefreshToken", false);
+        intent.putExtra("IsForAccessTokenRevoke", false);
+        intent.putExtra("IsForRefreshTokenRevoke", false);
+
+        mCallerActivity.startService(intent);
+    }
+
+    @Override
+    public void requestAccessTokenWithClientCredentials(String clientId,
+                                                        String clientSecret,
+                                                        String scope){
+        Intent intent = new Intent(mCallerActivity, AccessTokenRetrievalService.class);
+        intent.putExtra("ClientId", clientId);
+        intent.putExtra("ClientSecret", clientSecret);
+        intent.putExtra("Scope", scope);
+        intent.putExtra("GrantType", Constants.CLIENT_CREDENTIALS);
         intent.putExtra("IsForRefreshToken", false);
         intent.putExtra("IsForAccessTokenRevoke", false);
         intent.putExtra("IsForRefreshTokenRevoke", false);

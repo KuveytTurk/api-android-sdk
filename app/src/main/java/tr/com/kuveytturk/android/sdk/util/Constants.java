@@ -1,7 +1,7 @@
 /*
  *  KUVEYT TÜRK PARTICIPATION BANK INC.
  *
- *   Developed under MIT Licence
+ *   Developed under MIT License
  *   Copyright (c) 2018
  *
  *   Author : Fikri Aydemir
@@ -34,6 +34,9 @@ public class Constants {
     public static final String KT_ACCESS_TOKEN_RETRIEVAL_SERVICE_TAG = "KTATRService";
     public static final String KT_ACCESS_TOKEN_RETRIEVAL_SERVICE_MESSAGE = "KTWebAPIATRMessage";
     public static final String KT_ACCESS_TOKEN_RETRIEVAL_SERVICE_PAYLOAD = "KTWebAPIATRPayload";
+
+    public static String AUTHORIZATION_CODE = "authorization_code";
+    public static String CLIENT_CREDENTIALS = "client_credentials";
 
     public static void setAccessProperties(String baseAuthorizationUrl,
                                            String authorizationEndPoint,

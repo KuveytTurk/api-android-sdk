@@ -1,7 +1,7 @@
 /*
  *  KUVEYT TÜRK PARTICIPATION BANK INC.
  *
- *   Developed under MIT Licence
+ *   Developed under MIT License
  *   Copyright (c) 2018
  *
  *   Author : Fikri Aydemir
@@ -72,6 +72,7 @@ public class GetService extends IntentService {
             ArrayList<QueryParameterBean> queryParamList = null;
             try {
                 queryParamList = intent.getParcelableArrayListExtra("QueryParams");
+                if(queryParamList == null) { queryParamList = new ArrayList<>(); }
             } catch (Exception exp) {
                 Log.i(Constants.KT_GET_SERVICE_TAG, "Error occured while unmarshalling the query parameter list in onHandleIntent method: " + exp.getMessage());
                 Intent messageIntent = new Intent(Constants.KT_GET_SERVICE_MESSAGE);
@@ -82,12 +83,13 @@ public class GetService extends IntentService {
             }
 
             HashMap<String, Object> queryParametersAsMap = new LinkedHashMap<>();
-            for (QueryParameterBean queryParam : queryParamList) {
-                queryParametersAsMap.put(queryParam.getParamName(), queryParam.getParamValue());
-            }
-
 
             if (queryParamList != null && !queryParamList.isEmpty()) {
+
+                for (QueryParameterBean queryParam : queryParamList) {
+                    queryParametersAsMap.put(queryParam.getParamName(), queryParam.getParamValue());
+                }
+
                 //Make the web service request
                 if (deviceId != null) {
                     call = apiService.getWithDeviceId(
@@ -127,6 +129,8 @@ public class GetService extends IntentService {
             }
 
         } else { //public API
+
+            String authorizationBearer = intent.getStringExtra("Authorization");
             String signature = intent.getStringExtra("Signature");
             int languageId = intent.getIntExtra("LanguageId", 2); //Default is 2 for the English language
             String deviceId = intent.getStringExtra("DeviceId");
@@ -134,6 +138,7 @@ public class GetService extends IntentService {
             ArrayList<QueryParameterBean> queryParamList = null;
             try {
                 queryParamList = intent.getParcelableArrayListExtra("QueryParams");
+                if(queryParamList == null) { queryParamList = new ArrayList<>(); }
             } catch (Exception exp) {
                 Log.i(Constants.KT_GET_SERVICE_TAG, "Error occured while unmarshalling the query parameter list in onHandleIntent method: " + exp.getMessage());
                 Intent messageIntent = new Intent(Constants.KT_GET_SERVICE_MESSAGE);
@@ -144,11 +149,13 @@ public class GetService extends IntentService {
             }
 
             Map<String, Object> queryParametersAsMap = new LinkedHashMap<>();
-            for (QueryParameterBean queryParam : queryParamList) {
-                queryParametersAsMap.put(queryParam.getParamName(), queryParam.getParamValue());
-            }
+
 
             if (queryParamList != null && !queryParamList.isEmpty()) {
+
+                for (QueryParameterBean queryParam : queryParamList) {
+                    queryParametersAsMap.put(queryParam.getParamName(), queryParam.getParamValue());
+                }
 
                 if (deviceId != null) {
                     call = apiService.getFromPublicAPIWithDeviceId(
@@ -157,6 +164,7 @@ public class GetService extends IntentService {
                             signature,
                             languageId,
                             deviceId,
+                            authorizationBearer,
                             queryParametersAsMap);
                 } else {
                     call = apiService.getFromPublicAPI(
@@ -164,6 +172,7 @@ public class GetService extends IntentService {
                             CONTENT_TYPE,
                             signature,
                             languageId,
+                            authorizationBearer,
                             queryParametersAsMap);
                 }
             } else { //queryParams does NOT exist
@@ -171,13 +180,17 @@ public class GetService extends IntentService {
                     call = apiService.getFromPublicAPIWithDeviceId(
                             endPoint,
                             CONTENT_TYPE,
+                            signature,
                             languageId,
-                            deviceId);
+                            deviceId,
+                            authorizationBearer);
                 } else {
                     call = apiService.getFromPublicAPI(
                             endPoint,
                             CONTENT_TYPE,
-                            languageId);
+                            signature,
+                            languageId,
+                            authorizationBearer);
                 }
             }
         }

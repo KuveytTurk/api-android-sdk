@@ -1,7 +1,7 @@
 /*
  *  KUVEYT TÜRK PARTICIPATION BANK INC.
  *
- *   Developed under MIT Licence
+ *   Developed under MIT License
  *   Copyright (c) 2018
  *
  *   Author : Fikri Aydemir
@@ -16,6 +16,8 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+
+import com.google.gson.Gson;
 
 import java.io.IOException;
 
@@ -85,22 +87,51 @@ public class AccessTokenRetrievalService extends IntentService{
                     refreshToken);
         }
         else {
-            String clientId = intent.getExtras().getString("ClientId");
-            String clientSecret = intent.getExtras().getString("ClientSecret");
-            String grantType = "authorization_code";
-            String code = intent.getExtras().getString("Code");
-            String redirectUri = intent.getExtras().getString("RedirectUri");
+            String grantType = intent.getExtras().getString("GrantType");
+            if(grantType == null && grantType.isEmpty()) { grantType = Constants.AUTHORIZATION_CODE; }
 
-            //Make the web service request
-            apiService = retrofit.create(AccessTokenServiceInterface.class);
-            call = apiService.requestAccessTokenWithCode(
-                    Constants.ACCESS_TOKEN_ENDPOINT,
-                    clientId,
-                    clientSecret,
-                    grantType,
-                    code,
-                    redirectUri
-            );
+            if(grantType.equalsIgnoreCase(Constants.AUTHORIZATION_CODE)) {
+
+                String clientId = intent.getExtras().getString("ClientId");
+                String clientSecret = intent.getExtras().getString("ClientSecret");
+                String code = intent.getExtras().getString("Code");
+                String redirectUri = intent.getExtras().getString("RedirectUri");
+
+                //Make the web service request
+                apiService = retrofit.create(AccessTokenServiceInterface.class);
+                call = apiService.requestAccessTokenWithAuthorizationCode(
+                        Constants.ACCESS_TOKEN_ENDPOINT,
+                        clientId,
+                        clientSecret,
+                        grantType,
+                        code,
+                        redirectUri
+                );
+            } else if(grantType.equalsIgnoreCase(Constants.CLIENT_CREDENTIALS)) {
+
+                String clientId = intent.getExtras().getString("ClientId");
+                String clientSecret = intent.getExtras().getString("ClientSecret");
+                String scope = intent.getExtras().getString("Scope");
+
+                //Make the web service request
+                apiService = retrofit.create(AccessTokenServiceInterface.class);
+                call = apiService.requestAccessTokenWithClientCredentials(
+                        Constants.ACCESS_TOKEN_ENDPOINT,
+                        clientId,
+                        clientSecret,
+                        grantType,
+                        scope
+                );
+            }
+            else {
+                Intent messageIntent = new Intent(Constants.KT_ACCESS_TOKEN_RETRIEVAL_SERVICE_MESSAGE);
+                messageIntent.
+                        putExtra(Constants.KT_ACCESS_TOKEN_RETRIEVAL_SERVICE_PAYLOAD,
+                                "GRANT_TYPE parameter is missing in the request!");
+                LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
+                broadcastManager.sendBroadcast(messageIntent);
+                return;
+            }
         }
 
         Response<AccessTokenResponseBean> backEndResponse;
@@ -121,11 +152,20 @@ public class AccessTokenRetrievalService extends IntentService{
             LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
             broadcastManager.sendBroadcast(messageIntent);
         } else {
-            String errResponseBody = null;
+            AccessTokenResponseBean errResponseBody = null;
             try {
-                errResponseBody = backEndResponse.errorBody().string();
+                String responseStr = backEndResponse.errorBody().string();
+                Gson gson = new Gson();
+                errResponseBody = gson.fromJson(responseStr, AccessTokenResponseBean.class);
             } catch (IOException e) {
                 Log.i(Constants.KT_ACCESS_TOKEN_RETRIEVAL_SERVICE_TAG, "onHandleIntent: " + e.getMessage());
+                Intent messageIntent = new Intent(Constants.KT_ACCESS_TOKEN_RETRIEVAL_SERVICE_MESSAGE);
+                errResponseBody = new AccessTokenResponseBean();
+                errResponseBody.setError("Error occurred while retrieving access token response!");
+                errResponseBody.setErrorDescription(e.getLocalizedMessage());
+                messageIntent.putExtra(Constants.KT_ACCESS_TOKEN_RETRIEVAL_SERVICE_PAYLOAD, errResponseBody);
+                LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
+                broadcastManager.sendBroadcast(messageIntent);
                 return;
             }
             Intent messageIntent = new Intent(Constants.KT_ACCESS_TOKEN_RETRIEVAL_SERVICE_MESSAGE);

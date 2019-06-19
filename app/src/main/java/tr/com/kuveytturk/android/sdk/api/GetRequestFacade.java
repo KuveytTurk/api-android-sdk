@@ -1,7 +1,7 @@
 /*
  *  KUVEYT TÜRK PARTICIPATION BANK INC.
  *
- *   Developed under MIT Licence
+ *   Developed under MIT License
  *   Copyright (c) 2018
  *
  */
@@ -59,7 +59,8 @@ public interface GetRequestFacade<T extends Activity & ResponseHandlingFacade> {
      *                    mark.
      */
     void doGet(String endPoint,
-               ArrayList<QueryParameterBean> queryParams);
+               ArrayList<QueryParameterBean> queryParams,
+               String authorizationBearer);
 
     /**
      * Sends a GET request at the Kuveyt Türk web service by using the given parameters.
@@ -67,7 +68,7 @@ public interface GetRequestFacade<T extends Activity & ResponseHandlingFacade> {
      * @param endPoint Represents the end point from where the request is to be made
      *                 (e.g. v1/data/testcustomers).
      * @param authorizationBearer Holds the text in the format "Bearer <ACCESS_TOKEN>" where
-     *                            ACCESS_TOKEN ,s the token that is retrieved from the Kuveyt Türk
+     *                            ACCESS_TOKEN is the token that is retrieved from the Kuveyt Türk
      *                            identity server.
      * @param signature The encrypted text that is formed by hashing the access token
      *                  with query parameter string by using the private key instance.
@@ -80,12 +81,23 @@ public interface GetRequestFacade<T extends Activity & ResponseHandlingFacade> {
                String signature);
 
     /**
-     * Sends a GET request at the Kuveyt Türk web service by using the given parameters.
+     * Sends a GET request to the Kuveyt Türk web service by using the given parameters.
      *
      * @param endPoint Represents the end point from where the request is to be made
      *                 (e.g. v1/data/testcustomers).
+     * @param signature The encrypted text that is formed by hashing the access token
+     *                  with query parameter string by using the private key instance.
+     *                  In class SignatureGenerator that is available in the package
+     *                  tr.com.kuveytturk.android.sdk.api, you can find helper methods
+     *                  to create this signature object parameter.
+     *
+     * @param authorizationBearer Holds the text in the format "Bearer <ACCESS_TOKEN>" where
+     *                            ACCESS_TOKEN is the token that is retrieved from the Kuveyt Türk
+     *                            identity server.
      */
-    void doGet(String endPoint);
+    void doGetToPublicAPIEndPoint(String endPoint,
+                                  String signature,
+                                  String authorizationBearer);
 
 
 }

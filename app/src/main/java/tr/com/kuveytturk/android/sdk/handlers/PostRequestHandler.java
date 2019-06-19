@@ -1,7 +1,7 @@
 /*
  *  KUVEYT TÜRK PARTICIPATION BANK INC.
  *
- *   Developed under MIT Licence
+ *   Developed under MIT License
  *   Copyright (c) 2018
  *
  *   Author : Fikri Aydemir
@@ -71,8 +71,10 @@ public final class PostRequestHandler<T extends Activity & ResponseHandlingFacad
 
 
     @Override
-    public void doPost(String endPoint,
-                       String jsonBody){
+    public void doPostToPublicAPIEndPoint(String endPoint,
+                       String jsonBody,
+                       String authorizationBearer,
+                       String signature){
         Intent intent = new Intent(mCallerActivity, PostService.class);
         intent.putExtra("EndPoint", endPoint);
         intent.putExtra("JsonBody", jsonBody);

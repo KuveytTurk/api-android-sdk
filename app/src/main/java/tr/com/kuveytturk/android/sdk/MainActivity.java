@@ -1,7 +1,7 @@
 /*
  *  KUVEYT TÜRK PARTICIPATION BANK INC.
  *
- *   Developed under MIT Licence
+ *   Developed under MIT License
  *   Copyright (c) 2018
  *
  *   Author : Fikri Aydemir
@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements ResponseHandlingF
     private String mAccessToken;
     private String mRefreshToken;
 
+    private boolean isClientCredentials = false;
+
     private final static String PUBLIC_KEY = "-----BEGIN PUBLIC KEY-----" +
             "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCKdiTMfK6+6opAt7Lh3230kGA2" +
             "Rz+ErdKpjB41LI0lVh/HBuvVv46/Mou8sodPApuO0OXFrxRjqRLjr3yECOuY65vk" +
@@ -115,10 +117,34 @@ public class MainActivity extends AppCompatActivity implements ResponseHandlingF
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Start Authorization Code Flow", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
-                mKTAuthHandlerFacade.requestAuthorization(CLIENT_ID, RESPONSE_TYPE, REDIRECT_URI, SCOPE);
+                isClientCredentials = false;
+
+                mKTAuthHandlerFacade.requestAuthorization(
+                        CLIENT_ID,
+                        RESPONSE_TYPE,
+                        REDIRECT_URI,
+                        SCOPE);
+
+
+            }
+        });
+
+        FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Start Client Credential Flow", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+
+                isClientCredentials = true;
+
+                mKTAccessTokenHandlerFacade.requestAccessTokenWithClientCredentials(
+                        CLIENT_ID,
+                        CLIENT_SECRET,
+                        "public");
 
             }
         });
@@ -170,63 +196,103 @@ public class MainActivity extends AppCompatActivity implements ResponseHandlingF
             mRefreshToken = responseBean.getRefreshToken();
             mAuthorizationBearer = "Bearer " + mAccessToken;
 
-            //****** BEGIN Sample GET Request ******
-            ArrayList<QueryParameterBean> queryParams = new ArrayList<QueryParameterBean>();
-            QueryParameterBean param = new QueryParameterBean("cityId", "34");
-            queryParams.add(param);
+            //****** BEGIN Sample GET Request with Authorization Code Flow ******
+            if(!isClientCredentials) {
+                String signatureForGETRequest = null;
+                try {
+                    signatureForGETRequest =
+                            SignatureGenerator
+                                    .generateSignatureForGetRequest(mAccessToken,
+                                            PRIVATE_KEY);
+                } catch (SignatureGenerationException e) {
+                    e.printStackTrace();
+                    return;
+                }
 
-            String signatureForGETRequest = null;
-            try {
-                signatureForGETRequest =
-                        SignatureGenerator
-                                .generateSignatureForGetRequest(mAccessToken,
-                                                                PRIVATE_KEY,
-                                                                queryParams);
-            } catch (SignatureGenerationException e) {
-                e.printStackTrace();
-                return;
+                mKTGetRequestHandlerFacade.doGet(
+                        "v1/loans",
+                        mAuthorizationBearer,
+                        signatureForGETRequest);
+                //****** END Sample GET Request with Authorization Code Flow******
+
+                //****** BEGIN Sample POST Request with Authorization Code Flow ******
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("SenderAccountSuffix", 1);
+                jsonObject.addProperty("ReceiverName", "Dohn");
+                jsonObject.addProperty("ReceiverIBAN", "TR660020500009105718200001");
+                jsonObject.addProperty("Amount", 1);
+                jsonObject.addProperty("Comment", "SDK Test");
+                jsonObject.addProperty("PaymentTypeId", 99);
+                String jsonBody = jsonObject.toString();
+
+                String signatureForPostRequest = null;
+                try {
+                    signatureForPostRequest =
+                            SignatureGenerator
+                                    .generateSignatureForPostRequest(mAccessToken, PRIVATE_KEY, jsonBody);
+                } catch (SignatureGenerationException e) {
+                    e.printStackTrace();
+                    return;
+                }
+
+                //Make post request
+                mKTPostRequestHandlerFacade.doPost(
+                        "v1/transfers/ToIBAN",
+                        jsonBody,
+                        mAuthorizationBearer,
+                        signatureForPostRequest);
+                //****** END Sample POST Request  with Authorization Code Flow ******
+
+            } else {
+                //****** BEGIN Sample GET Request with Client Credentials Flow ******
+                String signatureForGETRequest = null;
+                try {
+                    signatureForGETRequest =
+                            SignatureGenerator.
+                                    generateSignatureForGetRequest(mAccessToken, PRIVATE_KEY);
+                } catch (SignatureGenerationException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                mKTGetRequestHandlerFacade.doGetToPublicAPIEndPoint(
+                        "v1/data/testcustomers",
+                        mAuthorizationBearer,
+                        signatureForGETRequest);
+                //****** END Sample GET Request with Client Credentials Flow ******
+
+                //****** BEGIN Sample POST Request with Client Credentials Flow ******
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("accountNumber", 8002577);
+                jsonObject.addProperty("accountSuffix", 1);
+                jsonObject.addProperty("processId", 421553);
+                jsonObject.addProperty("isPTTCollection", "false");
+                String jsonBody = jsonObject.toString();
+
+                String signatureForPostRequest = null;
+                try {
+                    signatureForPostRequest =
+                            SignatureGenerator
+                                    .generateSignatureForPostRequest(mAccessToken, PRIVATE_KEY, jsonBody);
+                } catch (SignatureGenerationException e) {
+                    e.printStackTrace();
+                    return;
+                }
+
+                //Make post request
+                mKTPostRequestHandlerFacade.doPost(
+                        "v1/collections",
+                        jsonBody,
+                        mAuthorizationBearer,
+                        signatureForPostRequest);
+
+                //****** END Sample POST Request with Client Credentials Flow ******
             }
-
-            mKTGetRequestHandlerFacade.doGet(
-                    "v1/data/banks/10/branches",
-                    queryParams,
-                    mAuthorizationBearer,
-                    signatureForGETRequest);
-            //mKTGetRequestHandlerFacade.doGet("v1/data/testcustomers",mAuthorizationBearer, mAccessToken);
-            //****** END Sample GET Request ******
-
-            //****** BEGIN Sample POST Request ******
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("SenderAccountSuffix", 1);
-            jsonObject.addProperty("ReceiverName", "Dohn");
-            jsonObject.addProperty("ReceiverIBAN", "TR660020500009105718200001");
-            jsonObject.addProperty("Amount", 1);
-            jsonObject.addProperty("Comment", "SDK Test");
-            jsonObject.addProperty("PaymentTypeId", 99);
-            String jsonBody = jsonObject.toString();
-
-            String signatureForPostRequest = null;
-            try {
-                signatureForPostRequest =
-                        SignatureGenerator
-                          .generateSignatureForPostRequest(mAccessToken, PRIVATE_KEY, jsonBody);
-            } catch (SignatureGenerationException e) {
-                e.printStackTrace();
-                return;
-            }
-
-            //Make post request
-            mKTPostRequestHandlerFacade.doPost(
-                    "v1/transfers/ToIBAN",
-                    jsonBody,
-                    mAuthorizationBearer,
-                    signatureForPostRequest);
-            //****** END Sample POST Request ******
 
         } else {
             System.out.println("ERROR OCCURRED WHILE RETRIEVING THE ACCESS CODE:\n ERROR: " +
-                    responseBean.getError() + "\nERROR DESCRIPTION: " +
-                    responseBean.getErrorDescription());
+                    responseBean.getError() + (responseBean.getErrorDescription() != null ?
+                    "\nERROR DESCRIPTION: " +
+                    responseBean.getErrorDescription() : ""));
         }
     }
 
@@ -234,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements ResponseHandlingF
     public void onAuthorizationCodeReceived(String authorizationCode, String state, String errorCode) {
         if (errorCode == null || errorCode.isEmpty()) {
             mKTAuthorizationCode = authorizationCode;
-            mKTAccessTokenHandlerFacade.requestAccessTokenWithCode(
+            mKTAccessTokenHandlerFacade.requestAccessTokenWithAuthorizationCode(
                     CLIENT_ID,
                     CLIENT_SECRET,
                     mKTAuthorizationCode,

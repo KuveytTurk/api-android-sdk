@@ -1,7 +1,7 @@
 /*
  *  KUVEYT TÜRK PARTICIPATION BANK INC.
  *
- *   Developed under MIT Licence
+ *   Developed under MIT License
  *   Copyright (c) 2018
  *
  *   Author : Fikri Aydemir
@@ -55,6 +55,31 @@ public final class SignatureGenerator {
 
         String queryString = getQueryParamsString(queryParams);
         String input = accessToken.trim() + queryString;
+        String base64Signature = null;
+
+        try {
+            PrivateKey privateKey = buildPrivateKeyFromString(privateKeyAsString);
+            base64Signature = signSHA256RSA(input, privateKey);
+        } catch (Exception e) {
+            String msg = e.getLocalizedMessage();
+            SignatureGenerationException signatureEx = new SignatureGenerationException(msg, e);
+            throw signatureEx;
+        }
+
+        return base64Signature;
+    }
+
+    /**
+     * Utility method for generating signature for GET requests
+     *
+     * @param accessToken The clientId that is provided by Kuveyt Türk API market when an application
+     *                    is created.
+     * @param privateKeyAsString The RSA private key as a string object
+     * @return The base64 encoded signature by using SHA256/RSA
+     */
+    public static String generateSignatureForGetRequest(String accessToken,
+                                                        String privateKeyAsString) throws SignatureGenerationException {
+        String input = accessToken.trim();
         String base64Signature = null;
 
         try {
