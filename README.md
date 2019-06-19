@@ -17,7 +17,7 @@ In the rest of this document, the name “SDK user” is used to refer to the ap
 
 # 1.2	Dependencies
 
-The SDK implementation makes use of retrofit and gson libraries. Therefore, the following gradle dependencies must be specified in the project build.gradle configuration file within the dependencies section:
+The SDK implementation makes use of retrofit and gson libraries. Therefore, following gradle dependencies must be specified in the project build.gradle configuration file within the dependencies section:
 
 		implementation 'com.squareup.retrofit2:retrofit:2.4.0'
 
