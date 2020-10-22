@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AndroidClientSDK.iml" filepath="$PROJECT_DIR$/AndroidClientSDK.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ClientSDK.iml" filepath="$PROJECT_DIR$/.idea/modules/ClientSDK.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ClientSDK.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ClientSDK.app.iml" />
     </modules>
   </component>
 </project>

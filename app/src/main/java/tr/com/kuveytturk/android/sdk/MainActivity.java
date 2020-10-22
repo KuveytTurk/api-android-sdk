@@ -41,9 +41,9 @@ import tr.com.kuveytturk.android.sdk.api.util.SignatureGenerationException;
 import tr.com.kuveytturk.android.sdk.api.util.SignatureGenerator;
 
 public class MainActivity extends AppCompatActivity implements ResponseHandlingFacade {
-    private final static String CLIENT_ID = "ea84d416918e4733bc87663a63142175";
-    private final static String CLIENT_SECRET =
-            "q7YEj9LIYeAdu7nZ28SSFJH7L3dLuTLGnk8tH6/LbSKIiPYvtihifQ==";
+
+    private final static String CLIENT_ID = "9a879348887f4066a843f0495d95acb3";
+    private final static String CLIENT_SECRET = "hgAj/Y8COOI84OmmNzCzH2KDqUi8OzEABb8PMo9vFf7YaLiIJLHwxg==";
     private final static String REDIRECT_URI = "ktauth://callback";
     private final String SCOPE = "loans transfers public accounts offline_access";
     private final static String RESPONSE_TYPE = "code";
@@ -61,27 +61,24 @@ public class MainActivity extends AppCompatActivity implements ResponseHandlingF
 
     private boolean isClientCredentials = false;
 
-    private final static String PUBLIC_KEY = "-----BEGIN PUBLIC KEY-----" +
-            "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCKdiTMfK6+6opAt7Lh3230kGA2" +
-            "Rz+ErdKpjB41LI0lVh/HBuvVv46/Mou8sodPApuO0OXFrxRjqRLjr3yECOuY65vk" +
-            "knHEjK5XjOF1GrlOzSMHaEggcdWBZTJo4wOyHA5kI8a+RVxNcRPCuQAxq5FXEzA6" +
-            "Q+gWwkAzxqSZ3dQRWwIDAQAB" +
-            "-----END PUBLIC KEY-----";
 
     private final static String PRIVATE_KEY =
-            "MIICWwIBAAKBgQCKdiTMfK6+6opAt7Lh3230kGA2Rz+ErdKpjB41LI0lVh/HBuvV" +
-            "v46/Mou8sodPApuO0OXFrxRjqRLjr3yECOuY65vkknHEjK5XjOF1GrlOzSMHaEgg" +
-            "cdWBZTJo4wOyHA5kI8a+RVxNcRPCuQAxq5FXEzA6Q+gWwkAzxqSZ3dQRWwIDAQAB" +
-            "AoGAaNvQQoyqSiuVSC3WaviqbOxp8LFEiVaak4xp1BtJSV1P84pqUBYiJOpCqUUK" +
-            "8+slo6LQYEWXS2Jfy866ncOjp65jzPlxm5D+0wNiuHJKDck5oMiRwqmMlS9nNezV" +
-            "xGG9RGXjUzwsII5AyorkDE2U3wXZy7hB8yHT0a6JrpDCJgECQQDD2yk+cprOkrxU" +
-            "/U/ZPG2TYtUffGlS45gyIsIhgsbRwhLhTvfxg8zwA+zk3ItUKKAJ/R8vYu1c0oFs" +
-            "NWC6nsojAkEAtPsFHy++8FA89ewW8+YvMnM6sNmFoO30xiTAPGi7d9hAkqUJAyMf" +
-            "pV3xf2QRCnzJYl3DrEzRu40fHLpWi8RDaQJAT8Gvyf5hjD208+cz3QL+nEZjA69m" +
-            "NJr6H3CIHZ1j2YduqNG/plpF2ne+wHQPSPZCNc8eI+3lOyd+DNKv0U9YgQJAa2lP" +
-            "8OJ1gEse4xXryXWkLV0WSD/Rf2G7FJ5bOX8vREGkkWRBpQsDjTHkUqchNgg5vZfI" +
-            "ukodcCKhhHtTQkCJgQJAb1mkLUtvRFSqkhKO5nFkwGMNfTR/3cfu19bG0iZ0MqVQ" +
-            "YTviFIbJrheEkjdo0+GgL9eBsONXlio0ALnKLZZrYg==";
+            "-----BEGIN PRIVATE KEY-----" +
+                    "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBANRMWo1MOpaPs7vJ" +
+                    "QiiYRLAiQz1DxS0gJA6wr6sGol56Xb+94FtU4ref6fwD86FMhosKN9l4iLjXMMqk" +
+                    "1K0uBAVpRRCehqQPH4pwEOojdTlOzih8PG1iKRhPjgeD5HDN9Z12hjpu/bemlPTy" +
+                    "ntyzMG1ZmQGiQMdoaYQenVHbDhlTAgMBAAECgYBFgqJ7dSQRvAdrSuBAjmqfCPjf" +
+                    "DFt5BPcJYEyEQO3U5VfgufjFrqt02AUyoNCaVYYP7E6RA+gwLTUqhIGmGlTyH376" +
+                    "Ruiz65CqPo8ZfWxOnQiywMJwFk2u4CpmdI3IJODLfF38Ps8Vwaqhr95koNT7e6mS" +
+                    "rpPKGxCvj/L9qsO1AQJBAPwL40MKlyp8B63iajMXZITrb2Yc8ZESPLkdu2X21kdT" +
+                    "mQKokdauaew9JGHkElu1J9WyUXZULEekLr4/FvRnQUECQQDXoNqiVrj46chMJrh7" +
+                    "c8I1h2MlqnYa8MMh43DmBR8uynsGlz0eFIEjcbYM4A3+5FNrEtN7wY2pE6kGJQp3" +
+                    "imGTAkEArFk8qAU/5Q82+RJP6Gvgknuji0HTdY3w8+x+znSBhfiGMqkuQIy3ZZFR" +
+                    "pZadbxRrDteGmNFqDfsY84KUob9RgQJAOrW9Ub4zFvLwamuQh2x5UIHQaQ0Eo0ky" +
+                    "mCOJNdfnKaJP5PeA2JPUpYXsf4zxwpkAbYLuuh91JrgHqXikZO/0qQJBAIqQiiHv" +
+                    "oGIUEE5y3RZ1dOsvGPbaavXG/OxtyAvjl5tfBSt1zmHMQi46ZuFrHSr54uc4BDfD" +
+                    "gDa5DmMqw0sTrhY=" +
+                    "-----END PRIVATE KEY-----";
 
     java.security.PublicKey mPublicKey;
     java.security.PrivateKey mPrivateKey;
@@ -127,8 +124,6 @@ public class MainActivity extends AppCompatActivity implements ResponseHandlingF
                         RESPONSE_TYPE,
                         REDIRECT_URI,
                         SCOPE);
-
-
             }
         });
 
@@ -140,12 +135,10 @@ public class MainActivity extends AppCompatActivity implements ResponseHandlingF
                         .setAction("Action", null).show();
 
                 isClientCredentials = true;
-
                 mKTAccessTokenHandlerFacade.requestAccessTokenWithClientCredentials(
                         CLIENT_ID,
                         CLIENT_SECRET,
                         "public");
-
             }
         });
     }
@@ -196,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements ResponseHandlingF
             mRefreshToken = responseBean.getRefreshToken();
             mAuthorizationBearer = "Bearer " + mAccessToken;
 
-            //****** BEGIN Sample GET Request with Authorization Code Flow ******
+            //****** BEGINNING of Sample GET Request with Authorization Code Flow ******
             if(!isClientCredentials) {
                 String signatureForGETRequest = null;
                 try {
@@ -209,20 +202,25 @@ public class MainActivity extends AppCompatActivity implements ResponseHandlingF
                     return;
                 }
 
+                //BEGIN - FİX the BUG here to get linkedin recommendation.
+                ArrayList<QueryParameterBean> queryParamList = new ArrayList<>();
+                QueryParameterBean queryParamBean = new QueryParameterBean("itemCount", "100");
+                queryParamList.add(queryParamBean);
+
                 mKTGetRequestHandlerFacade.doGet(
-                        "v1/loans",
+                        "v2/accounts/1/transactions",
+                        queryParamList,
                         mAuthorizationBearer,
                         signatureForGETRequest);
-                //****** END Sample GET Request with Authorization Code Flow******
+                //END - FİX the BUG here to get linkedin recommendation.
 
-                //****** BEGIN Sample POST Request with Authorization Code Flow ******
+                //****** END of Sample GET Request with Authorization Code Flow******
+
+                //****** BEGINNING of Sample POST Request with Authorization Code Flow ******
+                //Fetches account transactions
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("SenderAccountSuffix", 1);
-                jsonObject.addProperty("ReceiverName", "Dohn");
-                jsonObject.addProperty("ReceiverIBAN", "TR660020500009105718200001");
-                jsonObject.addProperty("Amount", 1);
-                jsonObject.addProperty("Comment", "SDK Test");
-                jsonObject.addProperty("PaymentTypeId", 99);
+                jsonObject.addProperty("suffix", 1);
+                jsonObject.addProperty("itemCount", 100);
                 String jsonBody = jsonObject.toString();
 
                 String signatureForPostRequest = null;
@@ -237,14 +235,14 @@ public class MainActivity extends AppCompatActivity implements ResponseHandlingF
 
                 //Make post request
                 mKTPostRequestHandlerFacade.doPost(
-                        "v1/transfers/ToIBAN",
+                        "v1/accounts/transactions",
                         jsonBody,
                         mAuthorizationBearer,
                         signatureForPostRequest);
-                //****** END Sample POST Request  with Authorization Code Flow ******
+                //****** END of Sample POST Request  with Authorization Code Flow ******
 
             } else {
-                //****** BEGIN Sample GET Request with Client Credentials Flow ******
+                //****** BEGINNING of  Sample GET Request with Client Credentials Flow ******
                 String signatureForGETRequest = null;
                 try {
                     signatureForGETRequest =
@@ -258,9 +256,9 @@ public class MainActivity extends AppCompatActivity implements ResponseHandlingF
                         "v1/data/testcustomers",
                         mAuthorizationBearer,
                         signatureForGETRequest);
-                //****** END Sample GET Request with Client Credentials Flow ******
+                //****** END of Sample GET Request with Client Credentials Flow ******
 
-                //****** BEGIN Sample POST Request with Client Credentials Flow ******
+                //****** BEGINNING of Sample POST Request with Client Credentials Flow ******
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("accountNumber", 8002577);
                 jsonObject.addProperty("accountSuffix", 1);
@@ -285,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements ResponseHandlingF
                         mAuthorizationBearer,
                         signatureForPostRequest);
 
-                //****** END Sample POST Request with Client Credentials Flow ******
+                //****** END of Sample POST Request with Client Credentials Flow ******
             }
 
         } else {

@@ -14,23 +14,18 @@ package tr.com.kuveytturk.android.sdk.api.util;
 
 import android.util.Base64;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
-import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Provides utility methods for signature generation for the GET and POST requests.
@@ -141,30 +136,31 @@ public final class SignatureGenerator {
      * @return Query parameters as string (e.g. ?param1=1&param2=2)
      */
     private static String getQueryParamsString(ArrayList<QueryParameterBean> queryParams) throws SignatureGenerationException {
+
         if (queryParams != null && !queryParams.isEmpty()) {
             StringBuilder sb = new StringBuilder();
 
-            try{
+            try {
                 sb.append(URLEncoder.encode("?", "UTF-8"));
             } catch (UnsupportedEncodingException exp) {
                 String msg = "Error occurred while converting ? mark into URLEncoded form.\n";
-                throw  new SignatureGenerationException(msg, exp);
+                throw new SignatureGenerationException(msg, exp);
             }
 
             int count = 0;
             for (QueryParameterBean e : queryParams) {
                 count++;
-                try{
-                  sb.append(URLEncoder.encode(e.getParamName(), "UTF-8")).
-                          append(URLEncoder.encode("=", "UTF-8")).
-                          append(URLEncoder.encode(e.getParamValue(), "UTF-8"));
+                try {
+                    sb.append(URLEncoder.encode(e.getParamName(), "UTF-8")).
+                            append(URLEncoder.encode("=", "UTF-8")).
+                            append(URLEncoder.encode(e.getParamValue(), "UTF-8"));
                 } catch (UnsupportedEncodingException exp) {
                     String msg = "Error occurred while converting query parameters into string form.\n";
                     throw new SignatureGenerationException(msg, exp);
                 }
 
                 if (count != queryParams.size()) {
-                    try{
+                    try {
                         sb.append(URLEncoder.encode("&", "UTF-8"));
                     } catch (UnsupportedEncodingException exp) {
                         String msg = "Error occurred while converting & mark into URLEncoded form.\n";
@@ -175,7 +171,6 @@ public final class SignatureGenerator {
 
             return sb.toString();
         }
-
         return "";
     }
 

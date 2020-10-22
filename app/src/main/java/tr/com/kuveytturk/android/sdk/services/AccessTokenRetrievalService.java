@@ -18,9 +18,12 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -42,9 +45,24 @@ public class AccessTokenRetrievalService extends IntentService{
 
     @Override
     protected void onHandleIntent(Intent intent) {
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(Constants.BASE_ACCESS_TOKEN_URL)
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+
+        final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(2, TimeUnit.MINUTES)
+                .readTimeout(2, TimeUnit.MINUTES)
+                .writeTimeout(2, TimeUnit.MINUTES)
+                .callTimeout(2, TimeUnit.MINUTES)
+                .retryOnConnectionFailure(true)
+                .build();
+
+        Gson gson = new GsonBuilder().setLenient().create();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.BASE_ACCESS_TOKEN_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(okHttpClient)
                 .build();
 
         Call<AccessTokenResponseBean> call;
@@ -155,7 +173,6 @@ public class AccessTokenRetrievalService extends IntentService{
             AccessTokenResponseBean errResponseBody = null;
             try {
                 String responseStr = backEndResponse.errorBody().string();
-                Gson gson = new Gson();
                 errResponseBody = gson.fromJson(responseStr, AccessTokenResponseBean.class);
             } catch (IOException e) {
                 Log.i(Constants.KT_ACCESS_TOKEN_RETRIEVAL_SERVICE_TAG, "onHandleIntent: " + e.getMessage());

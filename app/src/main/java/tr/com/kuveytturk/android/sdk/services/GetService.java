@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -82,7 +83,7 @@ public class GetService extends IntentService {
                 return;
             }
 
-            HashMap<String, Object> queryParametersAsMap = new LinkedHashMap<>();
+            TreeMap<String, Object> queryParametersAsMap = new TreeMap<>();
 
             if (queryParamList != null && !queryParamList.isEmpty()) {
 

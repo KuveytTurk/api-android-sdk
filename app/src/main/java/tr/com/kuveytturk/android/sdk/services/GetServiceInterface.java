@@ -32,7 +32,7 @@ public interface GetServiceInterface {
                            @Header("Authorization") String authorizationBearer,
                            @Header("Signature") String signature,
                            @Header("LanguageId") int languageId,
-                           @QueryMap Map<String, Object> queryParams);
+                           @QueryMap(encoded = true) Map<String, Object> queryParams);
 
     @GET("{endPoint}")
     Call<ResponseBody> get(@Path("endPoint") String endPoint,
@@ -57,7 +57,7 @@ public interface GetServiceInterface {
                                      @Header("Signature") String signature,
                                      @Header("LanguageId") int languageId,
                                      @Header("DeviceId") String deviceId,
-                                     @QueryMap Map<String, Object> queryParams);
+                                     @QueryMap(encoded = true) Map<String, Object> queryParams);
 
     //PUBLIC API Definitions
 
@@ -80,7 +80,7 @@ public interface GetServiceInterface {
                                         @Header("Signature") String signature,
                                         @Header("LanguageId") int languageId,
                                         @Header("Authorization") String authorizationBearer,
-                                        @QueryMap Map<String, Object> queryParams
+                                        @QueryMap(encoded = true) Map<String, Object> queryParams
                                         );
 
     @GET("{endPoint}")
@@ -98,6 +98,6 @@ public interface GetServiceInterface {
                                                     @Header("LanguageId") int languageId,
                                                     @Header("DeviceId") String deviceId,
                                                     @Header("Authorization") String authorizationBearer,
-                                                    @QueryMap Map<String, Object> queryParams);
+                                                    @QueryMap(encoded = true) Map<String, Object> queryParams);
 
 }
